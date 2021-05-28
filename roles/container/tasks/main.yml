@@ -1,3 +1,7 @@
+- name: Install pip
+  tags: install_pip
+  apt: name=python3-pip state=present
+
 - name: Install python modules for docker
   pip:
     name: "{{item.name}}"
@@ -8,19 +12,18 @@
   - {name: docker, version: 2.0.0}
   - {name: docker-py, version: 1.10.6}
 
+- name: upload the site directory to the docker host
+  tags: syncro
+  synchronize: src=/home/rsync/continuous_deployment/app dest=/tmp
+
 - name: build image docker app flask
-  docker_image:
-    name: my-app-flask
-    build:
-      path: .
-      args:
-        listen_port: 5000
-    source: build
+  tags: build-docker
+  docker_image: name=my-app-flask tag=v1 path=/tmp/app state=present
 
 - name: Run image docker app flask 1
   docker_container:
     name: app-flask1
-    image: my-app-flask #fait reference au nom de l'image sur le dockerhub
+    image: my-app-flask:v1 #fait reference au nom de l'image sur le dockerhub
     state: started #l'état dans lequel on veut que le container soit
     forcekill: yes
     #restart: yes
@@ -30,17 +33,17 @@
 - name: Run image docker app flask 2
   docker_container:
     name: app-flask2
-    image: my-app-flask #fait reference au nom de l'image sur le dockerhub
+    image: my-app-flask:v1 #fait reference au nom de l'image sur le dockerhub
     state: started #l'état dans lequel on veut que le container soit
     forcekill: yes
     #restart: yes
     ports:
       - 5002:5000
 
-- name: Run image docker app flask 2
+- name: Run image docker app flask 3
   docker_container:
     name: app-flask3
-    image: my-app-flask #fait reference au nom de l'image sur le dockerhub
+    image: my-app-flask:v1 #fait reference au nom de l'image sur le dockerhub
     state: started #l'état dans lequel on veut que le container soit
     forcekill: yes
     #restart: yes
