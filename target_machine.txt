@@ -1,0 +1,13 @@
+slave1 ansible_host=192.168.33.101
+slave2 ansible_host=192.168.33.102
+slave3 ansible_host=192.168.33.103
+
+[group1]
+slave1
+slave2
+
+[group2]
+slave3 ansible_host=192.168.33.103
+
+[group1:vars]
+ansible_python_interpreter=/usr/bin/python3
