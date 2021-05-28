@@ -7,7 +7,7 @@ slave1
 slave2
 
 [group2]
-slave3 ansible_host=192.168.33.103
+slave3
 
 [group1:vars]
 ansible_python_interpreter=/usr/bin/python3

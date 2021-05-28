@@ -1,0 +1,48 @@
+- name: Install python modules for docker
+  pip:
+    name: "{{item.name}}"
+    executable: pip3
+    version: "{{item.version}}"
+    state: present
+  with_items:
+  - {name: docker, version: 2.0.0}
+  - {name: docker-py, version: 1.10.6}
+
+- name: build image docker app flask
+  docker_image:
+    name: my-app-flask
+    build:
+      path: .
+      args:
+        listen_port: 5000
+    source: build
+
+- name: Run image docker app flask 1
+  docker_container:
+    name: app-flask1
+    image: my-app-flask #fait reference au nom de l'image sur le dockerhub
+    state: started #l'état dans lequel on veut que le container soit
+    forcekill: yes
+    #restart: yes
+    ports:
+      - 5001:5000
+
+- name: Run image docker app flask 2
+  docker_container:
+    name: app-flask2
+    image: my-app-flask #fait reference au nom de l'image sur le dockerhub
+    state: started #l'état dans lequel on veut que le container soit
+    forcekill: yes
+    #restart: yes
+    ports:
+      - 5002:5000
+
+- name: Run image docker app flask 2
+  docker_container:
+    name: app-flask3
+    image: my-app-flask #fait reference au nom de l'image sur le dockerhub
+    state: started #l'état dans lequel on veut que le container soit
+    forcekill: yes
+    #restart: yes
+    ports:
+      - 5003:5000
